@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <h1>Welcome, {{ session.username }}!</h1>
+    <p class="tagline">Your recent prediction history and health insights.</p>
+
+    <div class="card history-card">
+        <h2><i class="fas fa-history"></i> Prediction History</h2>
+
+        {% if history %}
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Disease</th>
+                        <th>Risk Result</th>
+                        <th>Input Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr class="result-{{ item.result | lower }}">
+                        <td>{{ item.timestamp }}</td>
+                        <td>{{ item.disease | replace('_', ' ') | title }}</td>
+                        <td><span class="status-badge status-{{ item.result | lower }}">{{ item.result }}</span></td>
+                        <td>
+                            <button class="btn secondary small" onclick="toggleDetails(this)">View Details</button>
+                            <div class="input-details hidden">
+                                <pre>{{ item.input_data }}</pre>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">No prediction history found. Go to <a href="{{ url_for('detect') }}">Detect</a> to run your first analysis!</div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    function toggleDetails(button) {
+        const details = button.nextElementSibling;
+        details.classList.toggle('hidden');
+        button.textContent = details.classList.contains('hidden') ? 'View Details' : 'Hide Details';
+    }
+</script>
+{% endblock %}

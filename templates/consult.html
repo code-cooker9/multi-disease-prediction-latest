@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Consult Doctors{% endblock %}
+
+{% block content %}
+<section>
+    <h2 style="text-align: center; color: var(--color-primary); margin-bottom: 40px;">👨‍⚕️ Expert Consultation Network</h2>
+    <p style="text-align: center; margin-bottom: 30px; max-width: 900px; margin-left: auto; margin-right: auto;">Connect with specialized healthcare professionals. **Disclaimer:** This is a simulated directory. Always verify credentials with a licensed medical board before seeking advice.</p>
+
+    <div class="doctor-grid">
+        {% for doctor in doctors %}
+        <div class="doctor-card">
+            <img src="{{ url_for('static', filename='images/doc_placeholder.png') }}" alt="{{ doctor.name }}" loading="lazy">
+            <h4>{{ doctor.name }}</h4>
+            <p><strong>Specialization:</strong> <span style="color: var(--color-secondary); font-weight: 600;">{{ doctor.specialty }}</span></p>
+            <p><strong>Experience:</strong> {{ doctor.experience }}</p>
+            <p><strong>Contact:</strong> {{ doctor.phone }}</p>
+            <a href="tel:{{ doctor.phone }}" class="btn-contact">📞 Call Now</a>
+            <a href="#" class="btn-contact" style="background-color: var(--color-primary); margin-left: 10px;">🗓️ Book Appointment</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

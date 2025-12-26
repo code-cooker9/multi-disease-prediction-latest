@@ -1,0 +1,35 @@
+# ai_healthcare_portal/requirements.txt
+# Core Web Framework
+#Flask==2.3.3
+#gunicorn==21.2.0  # For production deployment
+
+# Database
+#sqlite3 # Built into Python, but listing for clarity
+
+# Authentication/Security
+
+
+#bcrypt==4.1.2
+
+# Machine Learning & Data Handling
+#scikit-learn==0.24.2
+#numpy==1.19.5
+#pandas==1.2.4
+# Flask web framework
+Flask>=2.3,<3.0
+
+# ML and data processing
+numpy>=1.27
+pandas>=2.1
+scikit-learn>=1.3
+joblib>=1.3
+
+# Password hashing
+bcrypt>=4.0
+
+# Optional: For template styling and frontend (if needed)
+Jinja2>=3.1
+
+# Optional: For database management (though SQLite is built-in)
+# Not strictly required but helpful for consistency
+python-dotenv>=1.0

@@ -1,0 +1,50 @@
+{% set result_class = result | getResultClass %}
+
+<div class="result-card {{ result_class }}">
+    <div class="result-icon">
+        {% if result == 'Healthy' %}
+        <i class="fas fa-check-circle"></i>
+        {% elif result == 'Borderline' %}
+        <i class="fas fa-exclamation-triangle"></i>
+        {% else %}
+        <i class="fas fa-times-circle"></i>
+        {% endif %}
+    </div>
+    <div class="result-content">
+        <p class="result-status">{{ disease }} Prediction: <span class="status-text">{{ result }}</span></p>
+        <p class="result-accuracy">Model Accuracy: {{ accuracy }}</p>
+    </div>
+</div>
+
+<div class="suggestions-area">
+    <h2><i class="fas fa-lightbulb"></i> Intelligent Suggestions</h2>
+    
+    {% if suggestions.parameter %}
+    <div class="suggestion-box parameter-suggestions">
+        <h3><i class="fas fa-chart-line"></i> Parameter Alerts</h3>
+        <ul>
+            {% for item in suggestions.parameter %}
+            <li>{{ item | safe }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="suggestion-box clinical-guidance">
+        <h3><i class="fas fa-user-md"></i> Clinical Guidance</h3>
+        <ul>
+            {% for item in suggestions.clinical %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="suggestion-box herbal-reco">
+        <h3><i class="fas fa-leaf"></i> Herbal & Natural Recommendations</h3>
+        <ul>
+            {% for item in suggestions.herbal %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

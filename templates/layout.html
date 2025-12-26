@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-heartbeat"></i>MediRisk
+            </a>
+            <nav>
+                <a href="{{ url_for('index') }}">Home</a>
+<a href="{{ url_for('detect') }}">Detect</a>
+<a href="{{ url_for('consult') }}">Consult</a>
+<a href="{{ url_for('about') }}">About/Contact</a>
+
+                {% if 'user_id' in session %}
+                    <a href="{{ url_for('dashboard') }}" class="nav-button primary">Dashboard</a>
+                    <a href="{{ url_for('logout') }}" class="nav-button danger">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-button primary">Login</a>
+                    <a href="{{ url_for('signup') }}" class="nav-button secondary">Sign Up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {{ now.year }} AI Predictive Healthcare. Ethical & Professional Health Solutions.</p></div>
+        </footer>
+        <!-- Scripts --><script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>{% block scripts %}{% endblock %}
+    </body>
+    </html>

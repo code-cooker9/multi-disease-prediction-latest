@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+<section>
+    <h2 style="color: var(--color-primary); margin-bottom: 30px;">💾 Prediction History for {{ session.username }}</h2>
+    
+    {% if history %}
+    <div style="overflow-x: auto; background-color: var(--color-card-bg); border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Disease</th>
+                    <th>Risk Result</th>
+                    <th>Confidence</th>
+                    <th>Key Input Snapshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                <tr>
+                    <td>{{ record.date.split(' ')[0] }}</td>
+                    <td>{{ record.disease.title() }}</td>
+                    <td class="risk-{{ record.result }}">
+                        {{ record.result }}
+                    </td>
+                    <td>{{ record.confidence }}</td>
+                    <td>
+                        {% for key, value in record.inputs.items() | dictsort %}
+                            {% if loop.index <= 3 %}
+                                <small><strong>{{ key }}:</strong> {{ value }}<br></small>
+                            {% endif %}
+                        {% endfor %}
+                        {% if record.inputs | length > 3 %}<small>...</small>{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; padding: 50px; background-color: var(--color-card-bg); border-radius: 8px;">No prediction history found. Start using the <a href="{{ url_for('detect') }}" style="color: var(--color-primary);">Detect</a> section to view your personalized logs here!</p>
+    {% endif %}
+</section>
+{% endblock %}

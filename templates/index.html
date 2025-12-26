@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}AI Predictive Health | Home{% endblock %}
+
+{% block content %}
+
+<section class="hero-section" style="background-image: url('{{ url_for('static', filename='images/hero_bg.jpg') }}');">
+    <div class="hero-content">
+        <h1>AI-Powered Predictive Healthcare</h1>
+        <p>Harness the power of AI to proactively assess your health risk for multiple diseases.</p>
+
+        {% if 'user_id' in session %}
+            <a href="{{ url_for('detect') }}" class="btn primary large">Start Detection Now <i class="fas fa-arrow-right"></i></a>
+        {% else %}
+            <a href="{{ url_for('signup') }}" class="btn primary large">Sign Up & Get Started <i class="fas fa-user-plus"></i></a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="features-section">
+    <h2 class="section-title">Key Features & Ethical Vision</h2>
+    <div class="feature-grid">
+        
+        <div class="feature-card">
+            <i class="fas fa-brain"></i>
+            <h3>Multi-Disease Analysis</h3>
+            <p>Predict risk for Diabetes, Heart, Kidney, and more using trained Machine Learning models.</p>
+        </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Reliability First</h3>
+            <p>Our models are trained on verified datasets, rigorously cross-validated, and optimized for high accuracy.</p>
+        </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-hand-holding-medical"></i>
+            <h3>Holistic Guidance</h3>
+            <p>Receive immediate, actionable clinical and natural recommendations based on your individual results.</p>
+        </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-lock"></i>
+            <h3>Data Security</h3>
+            <p>Your health data and prediction history are securely stored using cryptographic hashing for credentials and robust database practices.</p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

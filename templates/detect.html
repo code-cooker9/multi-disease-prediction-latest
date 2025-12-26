@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block title %}Disease Detection{% endblock %}
+
+{% block content %}
+<section class="detection-section">
+    <h1 class="page-title">Disease Detection</h1>
+    <p class="tagline">Select a disease to begin the risk analysis. Your data is processed ethically and securely.</p>
+
+    <div class="disease-cards-grid">
+        {% for disease in diseases %}
+            {% set d_name = disease | replace('_', ' ') | title %}
+            <div class="card disease-card" data-disease-key="{{ disease }}" onclick="showForm('{{ disease }}', '{{ d_name }}')">
+                <i class="fas fa-heartbeat"></i> <h3>{{ d_name }}</h3>
+                <p>Predict risk for {{ d_name }}.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr class="section-divider">
+
+    <div id="form-container" class="card form-card hidden">
+        <h2 id="form-title"></h2>
+        <form id="prediction-form">
+            <div id="input-fields-area" class="input-fields-grid"></div>
+            <button type="submit" class="btn primary predict-button">
+                <i class="fas fa-brain"></i> Predict Risk
+            </button>
+            <div id="loading-spinner" class="spinner hidden"></div>
+        </form>
+    </div>
+
+    <div id="results-container" class="results-card hidden"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const DISEASE_PARAMS = JSON.parse('{{ DISEASE_PARAMETERS | tojson }}');
+    const CATEGORICAL_FIELDS = ['RBC', 'WBC', 'Blood_Pressure']; 
+
+    function getResultClass(result) {
+        switch (result) {
+            case 'Healthy': return 'result-healthy';
+            case 'Borderline': return 'result-borderline';
+            case 'Risky': return 'result-risky';
+            default: return 'result-unknown';
+        }
+    }
+
+    window.onload = function() {
+        const formContainer = document.getElementById('form-container');
+        const formTitle = document.getElementById('form-title');
+        const inputArea = document.getElementById('input-fields-area');
+        const predictionForm = document.getElementById('prediction-form');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        
+        window.showForm = function(diseaseKey, diseaseName) {
+            formTitle.textContent = `Input Parameters for ${diseaseName}`;
+            predictionForm.action = `{{ url_for('predict', disease_name='__key__') }}`.replace('__key__', diseaseKey);
+
+            let html = '';
+            const params = DISEASE_PARAMS[diseaseKey];
+
+            if (params && params.length > 0) {
+                params.forEach(param => {
+                    const cleanParam = param.replace(/_/g, ' ');
+                    if (CATEGORICAL_FIELDS.includes(param)) {
+                        html += `
+                            <div class="form-group">
+                                <label for="${param}">${cleanParam}*</label>
+                                <select id="${param}" name="${param}" required>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Abnormal">Abnormal</option>
+                                </select>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="form-group">
+                                <label for="${param}">${cleanParam}*</label>
+                                <input type="number" step="any" id="${param}" name="${param}" required>
+                            </div>
+                        `;
+                    }
+                });
+            } else {
+                html = '<p>Error: No parameters found for this disease.</p>';
+            }
+
+            inputArea.innerHTML = html;
+            formContainer.classList.remove('hidden');
+            resultsContainer.classList.add('hidden');
+            formContainer.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        predictionForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            loadingSpinner.classList.remove('hidden');
+            resultsContainer.classList.add('hidden');
+
+            const formData = new FormData(predictionForm);
+
+            try {
+                const response = await fetch(predictionForm.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                });
+
+                const data = await response.json();
+                loadingSpinner.classList.add('hidden');
+
+                if (data.status === 'success') {
+                    resultsContainer.innerHTML = data.html;
+                    resultsContainer.classList.remove('hidden');
+                    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Prediction Error: ' + data.error);
+                }
+            } catch (error) {
+                loadingSpinner.classList.add('hidden');
+                alert('An error occurred during network submission.');
+                console.error('Fetch error:', error);
+            }
+        });
+    };
+</script>
+{% endblock %}
