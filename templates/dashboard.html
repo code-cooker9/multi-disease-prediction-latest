@@ -26,8 +26,13 @@
                         <td>{{ item.disease | replace('_', ' ') | title }}</td>
                         <td><span class="status-badge status-{{ item.result | lower }}">{{ item.result }}</span></td>
                         <td>
-                            <button class="btn secondary small" onclick="toggleDetails(this)">View Details</button>
-                            <div class="input-details hidden">
+                            <button type="button" class="btn secondary small" data-toggle="details-{{ loop.index }}">View Details</button>
+                        </td>
+                    </tr>
+                    <tr id="details-{{ loop.index }}" class="details-row hidden">
+                        <td colspan="4">
+                            <div class="input-details">
+                                <h4>Input Parameters:</h4>
                                 <pre>{{ item.input_data }}</pre>
                             </div>
                         </td>
@@ -40,12 +45,4 @@
         {% endif %}
     </div>
 </section>
-
-<script>
-    function toggleDetails(button) {
-        const details = button.nextElementSibling;
-        details.classList.toggle('hidden');
-        button.textContent = details.classList.contains('hidden') ? 'View Details' : 'Hide Details';
-    }
-</script>
 {% endblock %}

@@ -18,14 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ------------------------------------------
-    // 2. Dashboard Utility (if logic wasn't in the HTML)
+    // 2. Dashboard Utility - Toggle Details Row
     // ------------------------------------------
-    const detailButtons = document.querySelectorAll('.history-table .btn.secondary.small');
+    const detailButtons = document.querySelectorAll('[data-toggle]');
     detailButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const details = this.nextElementSibling;
-            details.classList.toggle('hidden');
-            this.textContent = details.classList.contains('hidden') ? 'View Details' : 'Hide Details';
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-toggle');
+            const detailsRow = document.getElementById(targetId);
+            if (detailsRow) {
+                detailsRow.classList.toggle('hidden');
+                this.textContent = detailsRow.classList.contains('hidden') ? 'View Details' : 'Hide Details';
+            }
         });
     });
 
