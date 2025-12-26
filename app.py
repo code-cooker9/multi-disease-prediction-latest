@@ -184,6 +184,68 @@ def pneumonia_rule(inputs):
 
     return "Normal"
 
+def heart_rule(inputs):
+    """
+    Heart Disease Risk Assessment
+    
+    Inputs:
+    - age (years)
+    - sex (0 = Male, 1 = Female)
+    - cp (chest pain type: 0-3)
+    - trestbps (resting blood pressure)
+    - chol (cholesterol)
+    - thalach (max heart rate achieved)
+    - exang (exercise induced angina: 0 = No, 1 = Yes)
+    
+    Returns: "Normal" or "Risky"
+    """
+    try:
+        age = float(inputs.get('age', 0))
+        sex = int(inputs.get('sex', -1))
+        cp = int(inputs.get('cp', -1))
+        trestbps = float(inputs.get('trestbps', 0))
+        chol = float(inputs.get('chol', 0))
+        thalach = float(inputs.get('thalach', 0))
+        exang = int(inputs.get('exang', -1))
+    except:
+        return "Risky"
+    
+    risk_factors = 0
+    
+    # Age risk (higher risk for older patients)
+    if age > 55:
+        risk_factors += 1
+    
+    # High cholesterol
+    if chol > 240:
+        risk_factors += 1
+    elif chol > 200:
+        risk_factors += 0.5
+    
+    # High blood pressure
+    if trestbps > 140:
+        risk_factors += 1
+    elif trestbps > 130:
+        risk_factors += 0.5
+    
+    # Low max heart rate (indicates poor cardiac fitness)
+    if thalach < 100:
+        risk_factors += 1
+    
+    # Exercise induced angina (chest pain with exercise)
+    if exang == 1:
+        risk_factors += 2
+    
+    # Chest pain type (type 0 is typical angina, higher risk)
+    if cp == 0 or cp == 1:
+        risk_factors += 1
+    
+    # Risk assessment
+    if risk_factors >= 3:
+        return "Risky"
+    else:
+        return "Normal"
+
 def kidney_rule(inputs):
     try:
         sg = float(inputs.get('sg', 0))
@@ -266,8 +328,8 @@ RULE_BASED = {
     'malaria': malaria_rule,
     'pneumonia': pneumonia_rule,
     'kidney': kidney_rule,
-    'liver': liver_rule
-
+    'liver': liver_rule,
+    'heart': heart_rule
 }
 RECOMMENDATIONS = {
     'diabetes': {
