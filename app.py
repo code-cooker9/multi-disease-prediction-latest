@@ -624,11 +624,11 @@ def dashboard():
     if not user_id:
         return redirect(url_for('login'))
     conn = get_db_connection()
-    predictions = conn.execute(
+    history = conn.execute(
         "SELECT * FROM predictions WHERE user_id=? ORDER BY timestamp DESC", (user_id,)
     ).fetchall()
     conn.close()
-    return render_template('dashboard.html', predictions=predictions)
+    return render_template('dashboard.html', history=history)
 
 @app.route('/logout')
 def logout():
